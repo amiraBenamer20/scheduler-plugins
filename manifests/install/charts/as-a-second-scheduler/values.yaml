@@ -13,8 +13,9 @@ scheduler:
   nodeSelector: {}
   affinity: {}
   tolerations: []
-  extraArgs:
-    - --kubeconfig=/home/ansible-admin/.kube/config
+  #extraArgs:
+    
+  #/home/ansible-admin/.kube/config
     
 
 controller:

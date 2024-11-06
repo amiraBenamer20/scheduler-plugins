@@ -55,7 +55,10 @@ spec:
       containers:
       - command: {{- toYaml .Values.scheduler.command | nindent 8 }}
         args:
-        - --config=/etc/kubernetes/scheduler-config.yaml
+        - --kubeconfig=/var/lib/rancher/k3s/server/cred/scheduler.kubeconfig
+        - --authentication-kubeconfig=/var/lib/rancher/k3s/server/cred/scheduler.kubeconfig
+        - --authorization-kubeconfig=/var/lib/rancher/k3s/server/cred/scheduler.kubeconfig
+        - --bind-address=127.0.0.1
         image: {{ .Values.scheduler.image }}
         imagePullPolicy: IfNotPresent
         livenessProbe:
@@ -74,23 +77,24 @@ spec:
         resources: {{- toYaml . | nindent 10 }}
         {{- end }}
         securityContext:
-          privileged: false
+          runAsUser: 0  # Run as root
         volumeMounts:
         - name: scheduler-config
-          mountPath: /etc/kubernetes
+          mountPath: /var/lib/rancher/k3s/server/cred/scheduler.kubeconfig
+          subPath: scheduler.kubeconfig
+          readOnly: true
+        - name: scheduler-certs
+          mountPath: /var/lib/rancher/k3s/server/tls
           readOnly: true
       hostNetwork: false
       hostPID: false
       volumes:
       - name: scheduler-config
-        configMap:
-          name: scheduler-config
-      {{- with .Values.scheduler.nodeSelector }}
-      nodeSelector: {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.scheduler.affinity }}
-      affinity: {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.scheduler.tolerations }}
-      tolerations: {{- toYaml . | nindent 8 }}
-      {{- end }}
+        secret:
+          secretName: scheduler-kubeconfig  # Reference the secret created earlier
+      - name: scheduler-certs
+        hostPath:
+          path: /var/lib/rancher/k3s/server/tls
+          type: Directory
+      nodeSelector:
+        kubernetes.io/hostname: masternodecluster1  # Ensure the pod is scheduled on the master node
