@@ -52,32 +52,36 @@ spec:
         component: scheduler
     spec:
       serviceAccountName: {{ .Values.scheduler.name }}
+      hostNetwork: true   # Use host network if accessing 127.0.0.1
       containers:
-      - command: {{- toYaml .Values.scheduler.command | nindent 8 }}
+      - name: custom-scheduler  # <-- Add the container name here
+        securityContext:
+          runAsUser: 0  # Run as root (or use a UID that has permissions to access the files)
+          runAsGroup: 0 # Ensure the group has appropriate permissions
+          fsGroup: 0    # Allow shared file access
+        command: {{- toYaml .Values.scheduler.command | nindent 8 }}
         args:
+        - --bind-address=127.0.0.1
+        - --secure-port=10260
         - --kubeconfig=/var/lib/rancher/k3s/server/cred/scheduler.kubeconfig
         - --authentication-kubeconfig=/var/lib/rancher/k3s/server/cred/scheduler.kubeconfig
         - --authorization-kubeconfig=/var/lib/rancher/k3s/server/cred/scheduler.kubeconfig
-        - --bind-address=127.0.0.1
+
         image: {{ .Values.scheduler.image }}
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
             path: /healthz
-            port: 10259
+            host: 127.0.0.1
+            port: 10260
             scheme: HTTPS
           initialDelaySeconds: 15
-        name: scheduler-plugins-scheduler
         readinessProbe:
           httpGet:
             path: /healthz
-            port: 10259
+            host: 127.0.0.1
+            port: 10260
             scheme: HTTPS
-        {{- with .Values.scheduler.resources }}
-        resources: {{- toYaml . | nindent 10 }}
-        {{- end }}
-        securityContext:
-          runAsUser: 0  # Run as root
         volumeMounts:
         - name: scheduler-config
           mountPath: /var/lib/rancher/k3s/server/cred/scheduler.kubeconfig
@@ -86,15 +90,13 @@ spec:
         - name: scheduler-certs
           mountPath: /var/lib/rancher/k3s/server/tls
           readOnly: true
-      hostNetwork: false
-      hostPID: false
       volumes:
       - name: scheduler-config
         secret:
-          secretName: scheduler-kubeconfig  # Reference the secret created earlier
+          secretName: scheduler-kubeconfig
       - name: scheduler-certs
         hostPath:
           path: /var/lib/rancher/k3s/server/tls
           type: Directory
       nodeSelector:
-        kubernetes.io/hostname: masternodecluster1  # Ensure the pod is scheduled on the master node
+        kubernetes.io/hostname: masternodecluster1
