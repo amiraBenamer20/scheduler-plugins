@@ -54,49 +54,62 @@ spec:
       serviceAccountName: {{ .Values.scheduler.name }}
       hostNetwork: true   # Use host network if accessing 127.0.0.1
       containers:
-      - name: custom-scheduler  # <-- Add the container name here
+      - name: {{ .Values.scheduler.name }}scheduler-sigs  # <-- Add the container name here
         securityContext:
           runAsUser: 0  # Run as root (or use a UID that has permissions to access the files)
           runAsGroup: 0 # Ensure the group has appropriate permissions
           fsGroup: 0    # Allow shared file access
         command: {{- toYaml .Values.scheduler.command | nindent 8 }}
         args:
-        - --bind-address=127.0.0.1
+        #- --bind-address=127.0.0.1
         - --secure-port=10260
-        - --kubeconfig=/var/lib/rancher/k3s/server/cred/scheduler.kubeconfig
-        - --authentication-kubeconfig=/var/lib/rancher/k3s/server/cred/scheduler.kubeconfig
-        - --authorization-kubeconfig=/var/lib/rancher/k3s/server/cred/scheduler.kubeconfig
+        # - --kubeconfig=/var/lib/rancher/k3s/server/cred/scheduler.kubeconfig
+        # - --authentication-kubeconfig=/var/lib/rancher/k3s/server/cred/scheduler.kubeconfig
+        # - --authorization-kubeconfig=/var/lib/rancher/k3s/server/cred/scheduler.kubeconfig
+        - --config=/var/lib/rancher/k3s/server/cred/my-scheduler/my-scheduler-config.yaml
 
         image: {{ .Values.scheduler.image }}
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
             path: /healthz
-            host: 127.0.0.1
+            host: 0.0.0.0
             port: 10260
             scheme: HTTPS
-          initialDelaySeconds: 15
+          #initialDelaySeconds: 15
+          initialDelaySeconds: 300
+          periodSeconds: 30
         readinessProbe:
           httpGet:
             path: /healthz
-            host: 127.0.0.1
+            host: 0.0.0.0
             port: 10260
             scheme: HTTPS
+            # Add the insecureSkipVerify flag to skip certificate validation
+            httpHeaders:
+              - name: "X-Forwarded-Proto"
+                value: "https"
+          # Add insecureSkipVerify to avoid certificate validation issues
+          insecureSkipVerify: true
         volumeMounts:
         - name: scheduler-config
-          mountPath: /var/lib/rancher/k3s/server/cred/scheduler.kubeconfig
-          subPath: scheduler.kubeconfig
-          readOnly: true
-        - name: scheduler-certs
-          mountPath: /var/lib/rancher/k3s/server/tls
-          readOnly: true
+          mountPath: /var/lib/rancher/k3s/server/cred/my-scheduler
+          #subPath: scheduler.kubeconfig
+          #readOnly: true
+      #   - name: scheduler-certs
+      #     mountPath: /var/lib/rancher/k3s/server/tls
+      #     readOnly: true
+      # volumes:
+      # - name: scheduler-config
+      #   secret:
+      #     secretName: scheduler-kubeconfig
+      # - name: scheduler-certs
+      #   hostPath:
+      #     path: /var/lib/rancher/k3s/server/tls
+      #     type: Directory
       volumes:
-      - name: scheduler-config
-        secret:
-          secretName: scheduler-kubeconfig
-      - name: scheduler-certs
-        hostPath:
-          path: /var/lib/rancher/k3s/server/tls
-          type: Directory
+        - name: scheduler-config
+          configMap:
+            name: scheduler-config
       nodeSelector:
         kubernetes.io/hostname: masternodecluster1
