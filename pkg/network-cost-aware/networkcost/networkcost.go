@@ -33,9 +33,9 @@ import (
 
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	pluginconfig "sigs.k8s.io/scheduler-plugins/apis/config"
+	pluginconfig "github.com/amiraBenamer20/scheduler-plugins/apis/config"
 
-	networkawareutil "sigs.k8s.io/scheduler-plugins/pkg/networkaware/util"
+	networkawareutil "github.com/amiraBenamer20/scheduler-plugins/pkg/networkaware/util"
 
 	agv1alpha1 "github.com/diktyo-io/appgroup-api/pkg/apis/appgroup/v1alpha1"
 	ntv1alpha1 "github.com/diktyo-io/networktopology-api/pkg/apis/networktopology/v1alpha1"

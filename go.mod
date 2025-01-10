@@ -1,5 +1,5 @@
-module sigs.k8s.io/scheduler-plugins
 
+module github.com/amiraBenamer20/scheduler-plugins
 go 1.22.0
 
 require (
@@ -149,6 +149,8 @@ require (
 )
 
 replace (
+	sigs.k8s.io/scheduler-plugins => github.com/amiraBenamer20/scheduler-plugins vX.Y.Z
+
 	k8s.io/api => k8s.io/api v0.31.2
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.31.2
 	k8s.io/apimachinery => k8s.io/apimachinery v0.31.2
