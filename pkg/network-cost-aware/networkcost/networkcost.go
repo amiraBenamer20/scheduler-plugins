@@ -127,12 +127,20 @@ func (no *NetworkCostAware) Name() string {
 }
 
 func getArgs(obj runtime.Object) (*pluginconfig.NetworkCostArgs, error) {
-	NetworkCostArgs, ok := obj.(*pluginconfig.NetworkCostArgs)
-	if !ok {
-		return nil, fmt.Errorf("want args to be of type NetworkCostAware, got %T", obj)
-	}
+	// NetworkCostArgs, ok := obj.(*pluginconfig.NetworkCostArgs)
+	// if !ok {
+	// 	return nil, fmt.Errorf("want args to be of type NetworkCostAware, got %T", obj)
+	// }
 
-	return NetworkCostArgs, nil
+	// return NetworkCostArgs, nil
+
+	klog.Infof("Received obj: %T, value: %+v", obj, obj)
+    args, ok := obj.(*pluginconfig.NetworkCostArgs)
+    if !ok {
+        return nil, fmt.Errorf("expected NetworkCostArgs, got %T", obj)
+    }
+    klog.Infof("Parsed args successfully: %+v", args)
+    return args, nil
 }
 
 // ScoreExtensions : an interface for Score extended functionality
