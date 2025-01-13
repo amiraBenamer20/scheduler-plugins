@@ -33,7 +33,7 @@ import (
 	// networkawareutil "sigs.k8s.io/scheduler-plugins/pkg/networkaware/util"
 
 	pluginconfig "github.com/amiraBenamer20/scheduler-plugins/apis/config"
-	networkawareutil "github.com/amiraBenamer20/scheduler-plugins/pkg/networkaware/util"
+	networkawareutil "github.com/amiraBenamer20/scheduler-plugins/pkg/network-cost-aware/util"
 
 	agv1alpha "github.com/diktyo-io/appgroup-api/pkg/apis/appgroup/v1alpha1"
 )
@@ -103,8 +103,8 @@ func New(ctx context.Context, obj runtime.Object, handle framework.Handle) (fram
 // 1) Sort Pods based on their AppGroup and corresponding service topology graph.
 // 2) Otherwise, follow the strategy of the in-tree QueueSort Plugin (PrioritySort Plugin)
 func (ts *TopologicalcnSort) Less(pInfo1, pInfo2 *framework.QueuedPodInfo) bool {
-	p1AppGroup := networkawareutil.GetPodAppGroupLabel(pInfo1.Pod)
-	p2AppGroup := networkawareutil.GetPodAppGroupLabel(pInfo2.Pod)
+	p1AppGroup := networkcostawareutil.GetPodAppGroupLabel(pInfo1.Pod)
+	p2AppGroup := networkcostawareutil.GetPodAppGroupLabel(pInfo2.Pod)
 	ctx := context.TODO()
 	logger := klog.FromContext(ctx)
 
@@ -125,8 +125,8 @@ func (ts *TopologicalcnSort) Less(pInfo1, pInfo2 *framework.QueuedPodInfo) bool 
 	labelsP2 := pInfo2.Pod.GetLabels()
 
 	// Binary search to find both order index since topology list is ordered by Workload Name
-	orderP1 := networkawareutil.FindPodOrder(appGroup.Status.TopologyOrder, labelsP1[agv1alpha.AppGroupSelectorLabel])
-	orderP2 := networkawareutil.FindPodOrder(appGroup.Status.TopologyOrder, labelsP2[agv1alpha.AppGroupSelectorLabel])
+	orderP1 := networkcostawareutil.FindPodOrder(appGroup.Status.TopologyOrder, labelsP1[agv1alpha.AppGroupSelectorLabel])
+	orderP2 := networkcostawareutil.FindPodOrder(appGroup.Status.TopologyOrder, labelsP2[agv1alpha.AppGroupSelectorLabel])
 
 	logger.V(6).Info("Pod order values", "p1 order", orderP1, "p2 order", orderP2)
 
