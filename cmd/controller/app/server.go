@@ -21,12 +21,19 @@ import (
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/klog/v2/klogr"
-	ctrl "sigs.k8s.io/controller-runtime"
-	"sigs.k8s.io/controller-runtime/pkg/healthz"
-	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
+	// ctrl "sigs.k8s.io/controller-runtime"
+	// "sigs.k8s.io/controller-runtime/pkg/healthz"
+	// metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 
-	schedulingv1a1 "sigs.k8s.io/scheduler-plugins/apis/scheduling/v1alpha1"
-	"sigs.k8s.io/scheduler-plugins/pkg/controllers"
+	// schedulingv1a1 "sigs.k8s.io/scheduler-plugins/apis/scheduling/v1alpha1"
+	// "sigs.k8s.io/scheduler-plugins/pkg/controllers"
+
+	ctrl "github.com/amiraBenamer20/controller-runtime"
+	"github.com/amiraBenamer20/controller-runtime/pkg/healthz"
+	metricsserver "github.com/amiraBenamer20/controller-runtime/pkg/metrics/server"
+
+	schedulingv1a1 "github.com/amiraBenamer20/scheduler-plugins/apis/scheduling/v1alpha1"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/controllers"
 )
 
 var (
