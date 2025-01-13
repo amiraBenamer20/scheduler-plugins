@@ -22,7 +22,8 @@ import (
 	"os"
 
 	"github.com/spf13/pflag"
-	"sigs.k8s.io/scheduler-plugins/cmd/controller/app"
+	//"sigs.k8s.io/scheduler-plugins/cmd/controller/app"
+	"github.com/amiraBenamer20/scheduler-plugins/cmd/controller/app"
 )
 
 func main() {
