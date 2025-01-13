@@ -65,13 +65,13 @@ func (ts *TopologicalcnSort) Name() string {
 }
 
 // getArgs : returns the arguments for the TopologicalcnSort plugin.
-func getArgs(obj runtime.Object) (*pluginconfig.TopologicalSortArgs, error) {
-	TopologicalSortArgs, ok := obj.(*pluginconfig.TopologicalSortArgs)
+func getArgs(obj runtime.Object) (*pluginconfig.TopologicalcnSortArgs, error) {
+	TopologicalcnSortArgs, ok := obj.(*pluginconfig.TopologicalcnSortArgs)
 	if !ok {
-		return nil, fmt.Errorf("want args to be of type TopologicalSortArgs, got %T", obj)
+		return nil, fmt.Errorf("want args to be of type TopologicalcnSortArgs, got %T", obj)
 	}
 
-	return TopologicalSortArgs, nil
+	return TopologicalcnSortArgs, nil
 }
 
 // New : create an instance of a TopologicalSort plugin
