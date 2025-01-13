@@ -33,7 +33,7 @@ import (
 	// networkawareutil "sigs.k8s.io/scheduler-plugins/pkg/networkaware/util"
 
 	pluginconfig "github.com/amiraBenamer20/scheduler-plugins/apis/config"
-	networkawareutil "github.com/amiraBenamer20/scheduler-plugins/pkg/network-cost-aware/util"
+	networkcostawareutil "github.com/amiraBenamer20/scheduler-plugins/pkg/network-cost-aware/util"
 
 	agv1alpha "github.com/diktyo-io/appgroup-api/pkg/apis/appgroup/v1alpha1"
 )
