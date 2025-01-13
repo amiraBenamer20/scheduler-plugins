@@ -32,11 +32,19 @@ import (
 	"k8s.io/klog/v2/klogr"
 	st "k8s.io/kubernetes/pkg/scheduler/testing"
 
-	ctrl "sigs.k8s.io/controller-runtime"
-	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/client/fake"
+	// ctrl "sigs.k8s.io/controller-runtime"
+	// "sigs.k8s.io/controller-runtime/pkg/client"
+	// "sigs.k8s.io/controller-runtime/pkg/client/fake"
 
-	"sigs.k8s.io/scheduler-plugins/apis/scheduling/v1alpha1"
+	// "sigs.k8s.io/scheduler-plugins/apis/scheduling/v1alpha1"
+
+	
+
+	ctrl "github.com/amiraBenamer20/controller-runtime"
+	"github.com/amiraBenamer20/controller-runtime/pkg/client"
+	"github.com/amiraBenamer20/controller-runtime/pkg/client/fake"
+
+	"github.com/amiraBenamer20/scheduler-plugins/apis/scheduling/v1alpha1"
 )
 
 func Test_Run(t *testing.T) {

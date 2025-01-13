@@ -34,11 +34,18 @@ import (
 	"k8s.io/client-go/tools/record"
 	"k8s.io/klog/v2"
 
-	ctrl "sigs.k8s.io/controller-runtime"
-	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/client/fake"
-	"sigs.k8s.io/scheduler-plugins/apis/scheduling/v1alpha1"
-	testutil "sigs.k8s.io/scheduler-plugins/test/integration"
+	// ctrl "sigs.k8s.io/controller-runtime"
+	// "sigs.k8s.io/controller-runtime/pkg/client"
+	// "sigs.k8s.io/controller-runtime/pkg/client/fake"
+	// "sigs.k8s.io/scheduler-plugins/apis/scheduling/v1alpha1"
+	// testutil "sigs.k8s.io/scheduler-plugins/test/integration"
+
+	
+	ctrl "github.com/amiraBenamer20/controller-runtime"
+	"github.com/amiraBenamer20/controller-runtime/pkg/client"
+	"github.com/amiraBenamer20/controller-runtime/pkg/client/fake"
+	"github.com/amiraBenamer20/scheduler-plugins/apis/scheduling/v1alpha1"
+	testutil "github.com/amiraBenamer20/scheduler-plugins/test/integration"
 )
 
 func TestElasticQuotaController_Run(t *testing.T) {
