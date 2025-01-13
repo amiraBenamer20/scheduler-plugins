@@ -20,8 +20,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/security-profiles-operator/api/seccompprofile/v1beta1"
 
-	pluginconfig "sigs.k8s.io/scheduler-plugins/apis/config"
-	"sigs.k8s.io/scheduler-plugins/apis/scheduling/v1alpha1"
+	// pluginconfig "sigs.k8s.io/scheduler-plugins/apis/config"
+	// "sigs.k8s.io/scheduler-plugins/apis/scheduling/v1alpha1"
 
 	
 	pluginconfig "github.com/amiraBenamer20/scheduler-plugins/apis/config"
