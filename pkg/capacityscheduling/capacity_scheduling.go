@@ -43,9 +43,14 @@ import (
 	ctrlruntimecache "sigs.k8s.io/controller-runtime/pkg/cache"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"sigs.k8s.io/scheduler-plugins/apis/scheduling"
-	"sigs.k8s.io/scheduler-plugins/apis/scheduling/v1alpha1"
-	"sigs.k8s.io/scheduler-plugins/pkg/util"
+	// "sigs.k8s.io/scheduler-plugins/apis/scheduling"
+	// "sigs.k8s.io/scheduler-plugins/apis/scheduling/v1alpha1"
+	// "sigs.k8s.io/scheduler-plugins/pkg/util"
+
+
+	"github.com/amiraBenamer20/scheduler-plugins/apis/scheduling"
+	"github.com/amiraBenamer20/scheduler-plugins/apis/scheduling/v1alpha1"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/util"
 )
 
 var scheme = runtime.NewScheme()

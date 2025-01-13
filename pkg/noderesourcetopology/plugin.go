@@ -27,9 +27,13 @@ import (
 	"k8s.io/klog/v2"
 	"k8s.io/kubernetes/pkg/scheduler/framework"
 
-	apiconfig "sigs.k8s.io/scheduler-plugins/apis/config"
-	"sigs.k8s.io/scheduler-plugins/apis/config/validation"
-	nrtcache "sigs.k8s.io/scheduler-plugins/pkg/noderesourcetopology/cache"
+	// apiconfig "sigs.k8s.io/scheduler-plugins/apis/config"
+	// "sigs.k8s.io/scheduler-plugins/apis/config/validation"
+	// nrtcache "sigs.k8s.io/scheduler-plugins/pkg/noderesourcetopology/cache"
+
+	apiconfig "github.com/amiraBenamer20/scheduler-plugins/apis/config"
+	"github.com/amiraBenamer20/scheduler-plugins/apis/config/validation"
+	nrtcache "github.com/amiraBenamer20/scheduler-plugins/pkg/noderesourcetopology/cache"
 
 	"github.com/go-logr/logr"
 	topologyapi "github.com/k8stopologyawareschedwg/noderesourcetopology-api/pkg/apis/topology"

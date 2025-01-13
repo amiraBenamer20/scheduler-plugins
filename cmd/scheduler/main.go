@@ -24,25 +24,25 @@ import (
 	_ "k8s.io/component-base/metrics/prometheus/version"  // for version metric registration
 	"k8s.io/kubernetes/cmd/kube-scheduler/app"
 
-	"sigs.k8s.io/scheduler-plugins/pkg/capacityscheduling"
-	"sigs.k8s.io/scheduler-plugins/pkg/coscheduling"
-	"sigs.k8s.io/scheduler-plugins/pkg/networkaware/networkoverhead"
-	"sigs.k8s.io/scheduler-plugins/pkg/networkaware/topologicalsort"
-	"sigs.k8s.io/scheduler-plugins/pkg/network-cost-aware/networkcost"//Amira
-	"sigs.k8s.io/scheduler-plugins/pkg/network-cost-aware/topologicalcnsort"//Amira
-	"sigs.k8s.io/scheduler-plugins/pkg/noderesources"
-	"sigs.k8s.io/scheduler-plugins/pkg/noderesourcetopology"
-	"sigs.k8s.io/scheduler-plugins/pkg/podstate"
-	"sigs.k8s.io/scheduler-plugins/pkg/preemptiontoleration"
-	"sigs.k8s.io/scheduler-plugins/pkg/qos"
-	"sigs.k8s.io/scheduler-plugins/pkg/sysched"
-	"sigs.k8s.io/scheduler-plugins/pkg/trimaran/loadvariationriskbalancing"
-	"sigs.k8s.io/scheduler-plugins/pkg/trimaran/lowriskovercommitment"
-	"sigs.k8s.io/scheduler-plugins/pkg/trimaran/peaks"
-	"sigs.k8s.io/scheduler-plugins/pkg/trimaran/targetloadpacking"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/capacityscheduling"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/coscheduling"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/networkaware/networkoverhead"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/networkaware/topologicalsort"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/network-cost-aware/networkcost"//Amira
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/network-cost-aware/topologicalcnsort"//Amira
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/noderesources"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/noderesourcetopology"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/podstate"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/preemptiontoleration"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/qos"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/sysched"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/trimaran/loadvariationriskbalancing"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/trimaran/lowriskovercommitment"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/trimaran/peaks"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/trimaran/targetloadpacking"
 
 	// Ensure scheme package is initialized.
-	_ "sigs.k8s.io/scheduler-plugins/apis/config/scheme"
+	_ "github.com/amiraBenamer20/scheduler-plugins/apis/config/scheme"
 )
 
 func main() {

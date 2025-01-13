@@ -28,11 +28,18 @@ import (
 
 	"github.com/go-logr/logr"
 	topologyv1alpha2 "github.com/k8stopologyawareschedwg/noderesourcetopology-api/pkg/apis/topology/v1alpha2"
-	"sigs.k8s.io/scheduler-plugins/pkg/noderesourcetopology/logging"
-	"sigs.k8s.io/scheduler-plugins/pkg/noderesourcetopology/nodeconfig"
-	"sigs.k8s.io/scheduler-plugins/pkg/noderesourcetopology/resourcerequests"
-	"sigs.k8s.io/scheduler-plugins/pkg/noderesourcetopology/stringify"
-	"sigs.k8s.io/scheduler-plugins/pkg/util"
+	// "sigs.k8s.io/scheduler-plugins/pkg/noderesourcetopology/logging"
+	// "sigs.k8s.io/scheduler-plugins/pkg/noderesourcetopology/nodeconfig"
+	// "sigs.k8s.io/scheduler-plugins/pkg/noderesourcetopology/resourcerequests"
+	// "sigs.k8s.io/scheduler-plugins/pkg/noderesourcetopology/stringify"
+	// "sigs.k8s.io/scheduler-plugins/pkg/util"
+
+	
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/noderesourcetopology/logging"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/noderesourcetopology/nodeconfig"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/noderesourcetopology/resourcerequests"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/noderesourcetopology/stringify"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/util"
 )
 
 // The maximum number of NUMA nodes that Topology Manager allows is 8
