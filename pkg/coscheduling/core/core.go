@@ -34,8 +34,12 @@ import (
 	"k8s.io/kubernetes/pkg/scheduler/framework"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"sigs.k8s.io/scheduler-plugins/apis/scheduling/v1alpha1"
-	"sigs.k8s.io/scheduler-plugins/pkg/util"
+	// "sigs.k8s.io/scheduler-plugins/apis/scheduling/v1alpha1"
+	// "sigs.k8s.io/scheduler-plugins/pkg/util"
+
+	
+	"github.com/amiraBenamer20/scheduler-plugins/apis/scheduling/v1alpha1"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/util"
 )
 
 type Status string

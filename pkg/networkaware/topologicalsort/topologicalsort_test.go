@@ -37,7 +37,11 @@ import (
 
 	agv1alpha1 "github.com/diktyo-io/appgroup-api/pkg/apis/appgroup/v1alpha1"
 
-	"sigs.k8s.io/scheduler-plugins/pkg/networkaware/util"
+	// "sigs.k8s.io/scheduler-plugins/pkg/networkaware/util"
+	
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/networkaware/util"
+	
+	testutil "github.com/amiraBenamer20/scheduler-plugins/test/util"
 )
 
 func GetAppGroupCROnlineBoutique() *agv1alpha1.AppGroup {

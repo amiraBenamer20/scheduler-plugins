@@ -38,8 +38,12 @@ import (
 	"k8s.io/kubernetes/pkg/scheduler/framework"
 	schedutil "k8s.io/kubernetes/pkg/scheduler/util"
 
-	"sigs.k8s.io/scheduler-plugins/apis/config"
-	"sigs.k8s.io/scheduler-plugins/pkg/trimaran"
+	// "sigs.k8s.io/scheduler-plugins/apis/config"
+	// "sigs.k8s.io/scheduler-plugins/pkg/trimaran"
+
+	
+	"github.com/amiraBenamer20/scheduler-plugins/apis/config"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/trimaran"
 )
 
 const (

@@ -45,8 +45,12 @@ import (
 	imageutils "k8s.io/kubernetes/test/utils/image"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"sigs.k8s.io/scheduler-plugins/apis/scheduling/v1alpha1"
-	testutil "sigs.k8s.io/scheduler-plugins/test/util"
+	// "sigs.k8s.io/scheduler-plugins/apis/scheduling/v1alpha1"
+	// testutil "sigs.k8s.io/scheduler-plugins/test/util"
+
+	
+	"github.com/amiraBenamer20/scheduler-plugins/apis/scheduling/v1alpha1"
+	testutil "github.com/amiraBenamer20/scheduler-plugins/test/util"
 )
 
 const ResourceGPU v1.ResourceName = "nvidia.com/gpu"

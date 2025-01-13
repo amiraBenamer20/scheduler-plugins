@@ -44,7 +44,8 @@ import (
 	"k8s.io/kubernetes/pkg/scheduler/metrics"
 	"k8s.io/kubernetes/pkg/scheduler/util"
 	"k8s.io/utils/clock"
-	"sigs.k8s.io/scheduler-plugins/apis/config"
+	"github.com/amiraBenamer20/scheduler-plugins/apis/config"
+	
 )
 
 const (

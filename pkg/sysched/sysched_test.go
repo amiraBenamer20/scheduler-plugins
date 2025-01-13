@@ -24,9 +24,14 @@ import (
 	tf "k8s.io/kubernetes/pkg/scheduler/testing/framework"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
 
-	pluginconfig "sigs.k8s.io/scheduler-plugins/apis/config"
-	"sigs.k8s.io/scheduler-plugins/apis/scheduling/v1alpha1"
-	"sigs.k8s.io/security-profiles-operator/api/seccompprofile/v1beta1"
+	// pluginconfig "sigs.k8s.io/scheduler-plugins/apis/config"
+	// "sigs.k8s.io/scheduler-plugins/apis/scheduling/v1alpha1"
+	// "sigs.k8s.io/security-profiles-operator/api/seccompprofile/v1beta1"
+
+	
+	pluginconfig "github.com/amiraBenamer20/scheduler-plugins/apis/config"
+	"github.com/amiraBenamer20/scheduler-plugins/apis/scheduling/v1alpha1"
+	"github.com/amiraBenamer20/security-profiles-operator/api/seccompprofile/v1beta1"
 )
 
 var (

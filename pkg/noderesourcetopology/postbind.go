@@ -22,7 +22,9 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/klog/v2"
 	"k8s.io/kubernetes/pkg/scheduler/framework"
-	"sigs.k8s.io/scheduler-plugins/pkg/noderesourcetopology/logging"
+	// "sigs.k8s.io/scheduler-plugins/pkg/noderesourcetopology/logging"
+	
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/noderesourcetopology/logging"
 )
 
 func (tm *TopologyMatch) PostBind(ctx context.Context, state *framework.CycleState, pod *corev1.Pod, nodeName string) {

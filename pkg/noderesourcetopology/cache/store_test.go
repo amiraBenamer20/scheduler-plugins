@@ -30,7 +30,9 @@ import (
 	"k8s.io/apimachinery/pkg/labels"
 	podlisterv1 "k8s.io/client-go/listers/core/v1"
 	"k8s.io/klog/v2"
-	apiconfig "sigs.k8s.io/scheduler-plugins/apis/config"
+	// apiconfig "sigs.k8s.io/scheduler-plugins/apis/config"
+	
+	apiconfig "github.com/amiraBenamer20/scheduler-plugins/apis/config"
 
 	"github.com/k8stopologyawareschedwg/podfingerprint"
 )

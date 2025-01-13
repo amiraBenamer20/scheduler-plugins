@@ -30,8 +30,12 @@ import (
 	"k8s.io/klog/v2"
 	"k8s.io/kubernetes/pkg/scheduler/framework"
 
-	nrtcache "sigs.k8s.io/scheduler-plugins/pkg/noderesourcetopology/cache"
-	tu "sigs.k8s.io/scheduler-plugins/test/util"
+	// nrtcache "sigs.k8s.io/scheduler-plugins/pkg/noderesourcetopology/cache"
+	// tu "sigs.k8s.io/scheduler-plugins/test/util"
+
+	
+	nrtcache "github.com/amiraBenamer20/scheduler-plugins/pkg/noderesourcetopology/cache"
+	tu "github.com/amiraBenamer20/scheduler-plugins/test/util"
 )
 
 const (

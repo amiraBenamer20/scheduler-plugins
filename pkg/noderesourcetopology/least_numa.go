@@ -26,7 +26,9 @@ import (
 	topologyv1alpha2 "github.com/k8stopologyawareschedwg/noderesourcetopology-api/pkg/apis/topology/v1alpha2"
 	"gonum.org/v1/gonum/stat/combin"
 
-	"sigs.k8s.io/scheduler-plugins/pkg/util"
+	// "sigs.k8s.io/scheduler-plugins/pkg/util"
+	
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/util"
 )
 
 const (

@@ -23,7 +23,9 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/kubernetes/pkg/scheduler/framework"
-	"sigs.k8s.io/scheduler-plugins/pkg/util"
+	// "sigs.k8s.io/scheduler-plugins/pkg/util"
+
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/util"
 )
 
 const (

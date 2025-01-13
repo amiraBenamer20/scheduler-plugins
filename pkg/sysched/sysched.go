@@ -22,6 +22,10 @@ import (
 
 	pluginconfig "sigs.k8s.io/scheduler-plugins/apis/config"
 	"sigs.k8s.io/scheduler-plugins/apis/scheduling/v1alpha1"
+
+	
+	pluginconfig "github.com/amiraBenamer20/scheduler-plugins/apis/config"
+	"github.com/amiraBenamer20/scheduler-plugins/apis/scheduling/v1alpha1"
 )
 
 type SySched struct {

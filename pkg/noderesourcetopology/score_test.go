@@ -31,9 +31,14 @@ import (
 
 	ctrlclient "sigs.k8s.io/controller-runtime/pkg/client"
 
-	apiconfig "sigs.k8s.io/scheduler-plugins/apis/config"
-	nrtcache "sigs.k8s.io/scheduler-plugins/pkg/noderesourcetopology/cache"
-	tu "sigs.k8s.io/scheduler-plugins/test/util"
+	// apiconfig "sigs.k8s.io/scheduler-plugins/apis/config"
+	// nrtcache "sigs.k8s.io/scheduler-plugins/pkg/noderesourcetopology/cache"
+	// tu "sigs.k8s.io/scheduler-plugins/test/util"
+
+	
+	apiconfig "github.com/amiraBenamer20/scheduler-plugins/apis/config"
+	nrtcache "github.com/amiraBenamer20/scheduler-plugins/pkg/noderesourcetopology/cache"
+	tu "github.com/amiraBenamer20/scheduler-plugins/test/util"
 )
 
 const (

@@ -22,7 +22,9 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	"k8s.io/klog/v2"
-	apiconfig "sigs.k8s.io/scheduler-plugins/apis/config"
+	// apiconfig "sigs.k8s.io/scheduler-plugins/apis/config"
+	
+	apiconfig "github.com/amiraBenamer20/scheduler-plugins/apis/config"
 )
 
 func TestOnlyNonNUMAResources(t *testing.T) {

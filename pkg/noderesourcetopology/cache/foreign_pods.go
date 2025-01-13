@@ -25,8 +25,12 @@ import (
 	k8scache "k8s.io/client-go/tools/cache"
 	"k8s.io/klog/v2"
 
-	"sigs.k8s.io/scheduler-plugins/pkg/noderesourcetopology/logging"
-	"sigs.k8s.io/scheduler-plugins/pkg/noderesourcetopology/resourcerequests"
+	// "sigs.k8s.io/scheduler-plugins/pkg/noderesourcetopology/logging"
+	// "sigs.k8s.io/scheduler-plugins/pkg/noderesourcetopology/resourcerequests"
+
+	
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/noderesourcetopology/logging"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/noderesourcetopology/resourcerequests"
 )
 
 // The nodeIndexer and the go client facilities are global objects, so we need this to be global as well.

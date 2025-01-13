@@ -35,9 +35,14 @@ import (
 	"k8s.io/klog/v2"
 	"k8s.io/kubernetes/pkg/scheduler/framework"
 
-	pluginConfig "sigs.k8s.io/scheduler-plugins/apis/config"
-	cfgv1 "sigs.k8s.io/scheduler-plugins/apis/config/v1"
-	"sigs.k8s.io/scheduler-plugins/pkg/trimaran"
+	// pluginConfig "sigs.k8s.io/scheduler-plugins/apis/config"
+	// cfgv1 "sigs.k8s.io/scheduler-plugins/apis/config/v1"
+	// "sigs.k8s.io/scheduler-plugins/pkg/trimaran"
+
+	
+	pluginConfig "github.com/amiraBenamer20/scheduler-plugins/apis/config"
+	cfgv1 "github.com/amiraBenamer20/scheduler-plugins/apis/config/v1"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/trimaran"
 )
 
 const (

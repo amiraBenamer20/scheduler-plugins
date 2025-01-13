@@ -23,7 +23,8 @@ import (
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	"sigs.k8s.io/scheduler-plugins/apis/scheduling"
+	// "sigs.k8s.io/scheduler-plugins/apis/scheduling"
+	"github.com/amiraBenamer20/scheduler-plugins/apis/scheduling"
 )
 
 var (

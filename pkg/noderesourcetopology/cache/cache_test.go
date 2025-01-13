@@ -30,7 +30,10 @@ import (
 	podlisterv1 "k8s.io/client-go/listers/core/v1"
 
 	ctrlclient "sigs.k8s.io/controller-runtime/pkg/client"
-	tu "sigs.k8s.io/scheduler-plugins/test/util"
+	// tu "sigs.k8s.io/scheduler-plugins/test/util"
+
+	
+	tu "github.com/amiraBenamer20/scheduler-plugins/test/util"
 )
 
 type testCaseGetCachedNRTCopy struct {

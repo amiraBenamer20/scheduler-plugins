@@ -22,6 +22,7 @@ import (
 	"testing"
 
 	"sigs.k8s.io/scheduler-plugins/apis/config"
+	"github.com/amiraBenamer20/scheduler-plugins/apis/config"
 )
 
 func TestValidateNodeResourceTopologyMatchArgs(t *testing.T) {

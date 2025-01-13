@@ -24,7 +24,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"k8s.io/klog/v2"
 
-	"sigs.k8s.io/scheduler-plugins/pkg/trimaran"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/trimaran"
+	
 )
 
 func TestComputeScore(t *testing.T) {
