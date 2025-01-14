@@ -35,29 +35,52 @@ var (
 
 // addKnownTypes registers known types to the given scheme
 func addKnownTypes(scheme *runtime.Scheme) error {
-	scheme.AddKnownTypes(SchemeGroupVersion,
-		&CoschedulingArgs{},
-		&NodeResourcesAllocatableArgs{},
-		&TargetLoadPackingArgs{},
-		&LoadVariationRiskBalancingArgs{},
-		&LowRiskOverCommitmentArgs{},
-		&NodeResourceTopologyMatchArgs{},
-		&PreemptionTolerationArgs{},
-		&TopologicalSortArgs{},
-		&NetworkOverheadArgs{},
-		&NetworkCostArgs{},//Amira
-		&TopologicalcnSortArgs{},//Amira
-		&SySchedArgs{},
-		&PeaksArgs{},
-	)
+	// scheme.AddKnownTypes(SchemeGroupVersion,
+	// 	&CoschedulingArgs{},
+	// 	&NodeResourcesAllocatableArgs{},
+	// 	&TargetLoadPackingArgs{},
+	// 	&LoadVariationRiskBalancingArgs{},
+	// 	&LowRiskOverCommitmentArgs{},
+	// 	&NodeResourceTopologyMatchArgs{},
+	// 	&PreemptionTolerationArgs{},
+	// 	&TopologicalSortArgs{},
+	// 	&NetworkOverheadArgs{},
+	// 	&NetworkCostArgs{},//Amira
+	// 	&TopologicalcnSortArgs{},//Amira
+	// 	&SySchedArgs{},
+	// 	&PeaksArgs{},
+	// )
+
+	types := []runtime.Object{
+        &CoschedulingArgs{},
+        &NodeResourcesAllocatableArgs{},
+        &TargetLoadPackingArgs{},
+        &LoadVariationRiskBalancingArgs{},
+        &LowRiskOverCommitmentArgs{},
+        &NodeResourceTopologyMatchArgs{},
+        &PreemptionTolerationArgs{},
+        &TopologicalSortArgs{},
+        &NetworkOverheadArgs{},
+        &NetworkCostArgs{},       // Amira
+        &TopologicalcnSortArgs{}, // Amira
+        &SySchedArgs{},
+        &PeaksArgs{},
+    }
+
+    for _, t := range types {
+        klog.Infof("Registering type: %T", t)
+        scheme.AddKnownTypes(SchemeGroupVersion, t)
+    }
 	return nil
 }
 
 func init() {
-	// We only register manually written functions here. The registration of the
-	// generated functions takes place in the generated files. The separation
-	// makes the code compile even when the generated files are missing.
-	localSchemeBuilder.Register(addKnownTypes)
-	localSchemeBuilder.Register(RegisterDefaults)
-	localSchemeBuilder.Register(RegisterConversions)
+	klog.Infof("Initializing custom scheduler plugins...")
+
+    // We only register manually written functions here.
+    localSchemeBuilder.Register(addKnownTypes)
+    localSchemeBuilder.Register(RegisterDefaults)
+    localSchemeBuilder.Register(RegisterConversions)
+
+    klog.Infof("Custom scheduler plugins initialized successfully.")
 }

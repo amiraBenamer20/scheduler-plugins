@@ -28,17 +28,17 @@ import (
 	schedconfig "k8s.io/kubernetes/pkg/scheduler/apis/config"
 	"k8s.io/kubernetes/pkg/scheduler/apis/config/testing/defaults"
 
-	"sigs.k8s.io/scheduler-plugins/apis/config"
-	v1 "sigs.k8s.io/scheduler-plugins/apis/config/v1"
-	"sigs.k8s.io/scheduler-plugins/pkg/coscheduling"
-	"sigs.k8s.io/scheduler-plugins/pkg/networkaware/networkoverhead"
-	"sigs.k8s.io/scheduler-plugins/pkg/network-cost-aware/networkcost"//Amira
-	"sigs.k8s.io/scheduler-plugins/pkg/network-cost-aware/topologicalcnsort"//Amira
-	"sigs.k8s.io/scheduler-plugins/pkg/networkaware/topologicalsort"
-	"sigs.k8s.io/scheduler-plugins/pkg/noderesources"
-	"sigs.k8s.io/scheduler-plugins/pkg/trimaran/loadvariationriskbalancing"
-	"sigs.k8s.io/scheduler-plugins/pkg/trimaran/lowriskovercommitment"
-	"sigs.k8s.io/scheduler-plugins/pkg/trimaran/targetloadpacking"
+	"github.com/amiraBenamer20/scheduler-plugins/apis/config"
+	v1 "github.com/amiraBenamer20/scheduler-plugins/apis/config/v1"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/coscheduling"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/networkaware/networkoverhead"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/network-cost-aware/networkcost"//Amira
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/network-cost-aware/topologicalcnsort"//Amira
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/networkaware/topologicalsort"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/noderesources"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/trimaran/loadvariationriskbalancing"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/trimaran/lowriskovercommitment"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/trimaran/targetloadpacking"
 	"sigs.k8s.io/yaml"
 )
 
