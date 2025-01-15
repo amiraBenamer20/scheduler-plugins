@@ -19,6 +19,7 @@ package v1
 import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/klog/v2"
 	schedschemev1 "k8s.io/kube-scheduler/config/v1"
 	schedconfig "k8s.io/kubernetes/pkg/scheduler/apis/config"
 )
