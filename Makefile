@@ -16,7 +16,7 @@ GO_VERSION := 1.22.0
 INTEGTESTENVVAR=SCHED_PLUGINS_TEST_VERBOSE=1
 
 # Manage platform and builders
-PLATFORMS ?= linux/amd64#,linux/arm64,linux/s390x,linux/ppc64le
+PLATFORMS ?= linux/amd64
 BUILDER ?= docker
 ifeq ($(BUILDER),podman)
 	ALL_FLAG=--all
@@ -25,22 +25,20 @@ else
 endif
 
 # REGISTRY is the container registry to push
-REGISTRY?=audhub
+REGISTRY ?= audhub
 
 # Set a valid RELEASE_VERSION for testing
-RELEASE_VERSION := v0.30.6 # <-- Hardcoded version for testing
+RELEASE_VERSION := v0.30.6
 RELEASE_IMAGE := fspaas:kube-scheduler-$(RELEASE_VERSION)
 RELEASE_CONTROLLER_IMAGE := controller-$(RELEASE_VERSION)
 
-GO_BASE_IMAGE?=golang:$(GO_VERSION)
-DISTROLESS_BASE_IMAGE?=gcr.io/distroless/static:nonroot
-EXTRA_ARGS=""
+GO_BASE_IMAGE ?= golang:$(GO_VERSION)
+DISTROLESS_BASE_IMAGE ?= gcr.io/distroless/static:nonroot
+EXTRA_ARGS := ""
 
 # VERSION is the scheduler's version
 VERSION := $(shell echo $(RELEASE_VERSION) | awk -F - '{print $$2}')
 VERSION := $(or $(VERSION),v0.0.$(shell date +%Y%m%d))
-
-@echo "Using version: $(VERSION)" # <-- Debug output to ensure version is set correctly
 
 .PHONY: all
 all: build
@@ -50,14 +48,20 @@ build: build-controller build-scheduler
 
 .PHONY: build-controller
 build-controller:
-	$(GO_BUILD_ENV) go build -ldflags '-X k8s.io/component-base/version.gitVersion=$(VERSION) -w' -o bin/controller cmd/controller/controller.go
+	@echo "Building controller binary..."
+	@set -x
+	$(GO_BUILD_ENV) go build -v -ldflags '-X k8s.io/component-base/version.gitVersion=$(VERSION) -w' -o bin/controller cmd/controller/controller.go || (echo "Controller build failed"; exit 1)
 
 .PHONY: build-scheduler
 build-scheduler:
-	$(GO_BUILD_ENV) go build -ldflags '-X k8s.io/component-base/version.gitVersion=$(VERSION) -w' -o bin/kube-scheduler cmd/scheduler/main.go
+	@echo "Building scheduler binary..."
+	@echo "Using GO_BUILD_ENV=$(GO_BUILD_ENV)"
+	@set -x
+	$(GO_BUILD_ENV) go build -v -ldflags '-X k8s.io/component-base/version.gitVersion=$(VERSION) -w' -o bin/kube-scheduler cmd/scheduler/main.go || (echo "Scheduler build failed"; exit 1)
 
 .PHONY: build-images
 build-images:
+	@echo "Building container images..."
 	BUILDER=$(BUILDER) \
 	PLATFORMS=$(PLATFORMS) \
 	RELEASE_VERSION=$(RELEASE_VERSION) \
@@ -67,7 +71,7 @@ build-images:
 	GO_BASE_IMAGE=$(GO_BASE_IMAGE) \
 	DISTROLESS_BASE_IMAGE=$(DISTROLESS_BASE_IMAGE) \
 	DOCKER_BUILDX_CMD=$(DOCKER_BUILDX_CMD) \
-	EXTRA_ARGS=$(EXTRA_ARGS) hack/build-images.sh
+	EXTRA_ARGS=$(EXTRA_ARGS) hack/build-images.sh || (echo "Image build failed"; exit 1)
 
 .PHONY: local-image
 local-image: PLATFORMS="linux/$$(uname -m)"
@@ -82,28 +86,34 @@ push-images: build-images
 
 .PHONY: update-gomod
 update-gomod:
-	hack/update-gomod.sh
+	@echo "Updating Go modules..."
+	hack/update-gomod.sh || (echo "Go module update failed"; exit 1)
 
 .PHONY: unit-test
 unit-test: install-envtest
-	hack/unit-test.sh $(ARGS)
+	@echo "Running unit tests..."
+	hack/unit-test.sh $(ARGS) || (echo "Unit tests failed"; exit 1)
 
 .PHONY: install-envtest
 install-envtest:
-	hack/install-envtest.sh
+	@echo "Installing envtest..."
+	hack/install-envtest.sh || (echo "Envtest installation failed"; exit 1)
 
 .PHONY: integration-test
 integration-test: install-envtest
-	$(INTEGTESTENVVAR) hack/integration-test.sh $(ARGS)
+	@echo "Running integration tests..."
+	$(INTEGTESTENVVAR) hack/integration-test.sh $(ARGS) || (echo "Integration tests failed"; exit 1)
 
 .PHONY: verify
 verify:
-	hack/verify-gomod.sh
-	hack/verify-gofmt.sh
-	hack/verify-crdgen.sh
-	hack/verify-structured-logging.sh
-	hack/verify-toc.sh
+	@echo "Verifying code format and structure..."
+	hack/verify-gomod.sh || (echo "Go module verification failed"; exit 1)
+	hack/verify-gofmt.sh || (echo "Code formatting verification failed"; exit 1)
+	hack/verify-crdgen.sh || (echo "CRD generation verification failed"; exit 1)
+	hack/verify-structured-logging.sh || (echo "Structured logging verification failed"; exit 1)
+	hack/verify-toc.sh || (echo "Table of contents verification failed"; exit 1)
 
 .PHONY: clean
 clean:
-	rm -rf ./bin
+	@echo "Cleaning up build artifacts..."
+	rm -rf ./bin || (echo "Failed to clean up"; exit 1)

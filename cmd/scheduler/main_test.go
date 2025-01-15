@@ -34,19 +34,19 @@ import (
 	"k8s.io/kubernetes/pkg/scheduler/apis/config/testing/defaults"
 	"sigs.k8s.io/controller-runtime/pkg/envtest"
 
-	"sigs.k8s.io/scheduler-plugins/pkg/capacityscheduling"
-	"sigs.k8s.io/scheduler-plugins/pkg/coscheduling"
-	"sigs.k8s.io/scheduler-plugins/pkg/networkaware/networkoverhead"
-	"sigs.k8s.io/scheduler-plugins/pkg/networkaware/topologicalsort"
-	"sigs.k8s.io/scheduler-plugins/pkg/network-cost-aware/networkcost"//Amira
-	"sigs.k8s.io/scheduler-plugins/pkg/network-cost-aware/topologicalcnsort"//Amira
-	"sigs.k8s.io/scheduler-plugins/pkg/noderesources"
-	"sigs.k8s.io/scheduler-plugins/pkg/noderesourcetopology"
-	"sigs.k8s.io/scheduler-plugins/pkg/podstate"
-	"sigs.k8s.io/scheduler-plugins/pkg/qos"
-	"sigs.k8s.io/scheduler-plugins/pkg/trimaran/loadvariationriskbalancing"
-	"sigs.k8s.io/scheduler-plugins/pkg/trimaran/lowriskovercommitment"
-	"sigs.k8s.io/scheduler-plugins/pkg/trimaran/targetloadpacking"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/capacityscheduling"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/coscheduling"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/networkaware/networkoverhead"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/networkaware/topologicalsort"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/network-cost-aware/networkcost"//Amira
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/network-cost-aware/topologicalcnsort"//Amira
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/noderesources"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/noderesourcetopology"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/podstate"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/qos"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/trimaran/loadvariationriskbalancing"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/trimaran/lowriskovercommitment"
+	"github.com/amiraBenamer20/scheduler-plugins/pkg/trimaran/targetloadpacking"
 )
 
 func TestSetup(t *testing.T) {
