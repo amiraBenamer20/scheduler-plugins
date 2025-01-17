@@ -149,7 +149,7 @@ require (
 )
 
 replace (
-	sigs.k8s.io/scheduler-plugins => github.com/amiraBenamer20/scheduler-plugins v0.0.0-c4ac06c9be6cfed91f1c7b8dbb743e5d6741399e
+	sigs.k8s.io/scheduler-plugins => github.com/amiraBenamer20/scheduler-plugins v0.0.0-0c7de2c4ef5ed9c4479602863f66701998af8db7
 
 	k8s.io/api => k8s.io/api v0.31.2
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.31.2
