@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"math"
 	"sort"
+	"strconv"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/labels"
@@ -254,6 +255,7 @@ func (no *NetworkCostAware) PreFilter(ctx context.Context, state *framework.Cycl
 	satisfiedMap := make(map[string]int64)
 	violatedMap := make(map[string]int64)
 	finalCostMap := make(map[string]int64)
+	nodeResourceCostMap := make(map[string]int64)  //amira 
 
 	// For each node:
 	// 1 - Get region and zone labels
