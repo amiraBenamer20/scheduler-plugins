@@ -61,6 +61,9 @@ const (
 
 	// preFilterStateKey is the key in CycleState to NetworkCostAware pre-computed data.
 	preFilterStateKey = "PreFilter" + Name
+
+	// ResourceCostAnnotation defines the annotation key for resource usage cost
+    ResourceCostAnnotation = "node.kubernetes.io/resource-cost"  
 )
 
 var scheme = runtime.NewScheme()
@@ -114,6 +117,10 @@ type PreFilterState struct {
 
 	// node map for costs
 	finalCostMap map[string]int64
+
+
+	// Add a map to store resource costs per node
+	nodeResourceCostMap map[string]int64  //amira 
 }
 
 // Clone the preFilter state.
@@ -289,6 +296,29 @@ func (no *NetworkCostAware) PreFilter(ctx context.Context, state *framework.Cycl
 		}
 		logger.V(6).Info("Node final cost", "cost", cost)
 		finalCostMap[nodeInfo.Node().Name] = cost
+
+
+
+		//Amira
+		 // retrieve resource usage cost from annotations
+		 cpuCost, cpuFound := nodeInfo.Node().Annotations["resourceCost.cpu"]
+		 memoryCost, memoryFound := nodeInfo.Node().Annotations["resourceCost.memory"]
+	 
+		 if cpuFound {
+			 cost, err := strconv.ParseInt(cpuCost, 10, 64)
+			 if err == nil {
+				 // Add CPU cost to the resource map
+				 nodeResourceCostMap[nodeInfo.Node().Name] += cost
+			 }
+		 }
+	 
+		 if memoryFound {
+			 cost, err := strconv.ParseInt(memoryCost, 10, 64)
+			 if err == nil {
+				 // Add memory cost to the resource map
+				 nodeResourceCostMap[nodeInfo.Node().Name] += cost
+			 }
+		 }
 	}
 
 	// Update PreFilter State
@@ -303,6 +333,7 @@ func (no *NetworkCostAware) PreFilter(ctx context.Context, state *framework.Cycl
 		satisfiedMap:    satisfiedMap,
 		violatedMap:     violatedMap,
 		finalCostMap:    finalCostMap,
+		nodeResourceCostMap: nodeResourceCostMap, //Amira
 	}
 
 	state.Write(preFilterStateKey, preFilterState)
@@ -393,6 +424,12 @@ func (no *NetworkCostAware) Score(ctx context.Context,
 	// Return Accumulated Cost as score
 	score = preFilterState.finalCostMap[nodeName]
 	logger.V(4).Info("Score:", "pod", pod.GetName(), "node", nodeName, "finalScore", score)
+	//Amira
+	// Add resource usage costs to the score (higher costs are worse)
+    resourceCost := preFilterState.nodeResourceCostMap[nodeName]
+    score += resourceCost
+
+	logger.V(4).Info("Score with resource costs:", "pod", pod.GetName(), "node", nodeName, "finalScore", score)
 	return score, framework.NewStatus(framework.Success, "Accumulated cost added as score, normalization ensures lower costs are favored")
 }
 
