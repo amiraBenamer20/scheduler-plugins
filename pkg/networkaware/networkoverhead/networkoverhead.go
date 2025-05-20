@@ -21,7 +21,6 @@ import (
 	"fmt"
 	"math"
 	"sort"
-	"strconv" //amira
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/labels"
@@ -43,11 +42,33 @@ import (
 	
 	pluginconfig "github.com/amiraBenamer20/scheduler-plugins/apis/config"
 	networkawareutil "github.com/amiraBenamer20/scheduler-plugins/pkg/networkaware/util"
+
+	//track metrics
+	// "github.com/prometheus/client_golang/prometheus"
+    // "github.com/prometheus/client_golang/prometheus/promhttp"
+    // "net/http"
 )
 
 var _ framework.PreFilterPlugin = &NetworkOverhead{}
 var _ framework.FilterPlugin = &NetworkOverhead{}
 var _ framework.ScorePlugin = &NetworkOverhead{}
+
+// var (
+//     nodeScoreMetric = prometheus.NewGaugeVec(
+//         prometheus.GaugeOpts{
+//             Name: "customized_scheduler_node_score",
+//             Help: "Score assigned to nodes during scheduling",
+//         },
+//         []string{"node", "pod"},
+//     )
+//     schedulingLatencyMetric = prometheus.NewGaugeVec(
+//         prometheus.GaugeOpts{
+//             Name: "customized_scheduler_latency_ms",
+//             Help: "Scheduling latency in milliseconds",
+//         },
+//         []string{"node", "pod"},
+//     )
+// )
 
 const (
 	// Name : name of plugin used in the plugin registry and configurations.
@@ -118,9 +139,7 @@ type PreFilterState struct {
 	// node map for costs
 	finalCostMap map[string]int64
 
-
-	// Add a map to store resource costs per node
-	nodeResourceCostMap map[string]int64  //amira 
+	nodeInfoMap map[string]*framework.NodeInfo //Amira
 }
 
 // Clone the preFilter state.
@@ -246,7 +265,8 @@ func (no *NetworkOverhead) PreFilter(ctx context.Context, state *framework.Cycle
 	satisfiedMap := make(map[string]int64)
 	violatedMap := make(map[string]int64)
 	finalCostMap := make(map[string]int64)
-	nodeResourceCostMap := make(map[string]int64)  //amira 
+	nodeInfoMap := make(map[string]*framework.NodeInfo) //Amira
+	
 
 	// For each node:
 	// 1 - Get region and zone labels
@@ -280,6 +300,8 @@ func (no *NetworkOverhead) PreFilter(ctx context.Context, state *framework.Cycle
 		// Update Satisfied and Violated maps
 		satisfiedMap[nodeInfo.Node().Name] = satisfied
 		violatedMap[nodeInfo.Node().Name] = violated
+		nodeInfoMap[nodeInfo.Node().Name] = nodeInfo //Amira
+
 		logger.V(6).Info("Number of dependencies", "satisfied", satisfied, "violated", violated)
 
 		// Get accumulated cost based on pod dependencies
@@ -289,30 +311,6 @@ func (no *NetworkOverhead) PreFilter(ctx context.Context, state *framework.Cycle
 		}
 		logger.V(6).Info("Node final cost", "cost", cost)
 		finalCostMap[nodeInfo.Node().Name] = cost
-
-
-
-		//Amira
-		 // retrieve resource usage cost from annotations
-		 cpuCost, cpuFound := nodeInfo.Node().Annotations["resourceCost.cpu"]
-		 memoryCost, memoryFound := nodeInfo.Node().Annotations["resourceCost.memory"]
-	 
-		 if cpuFound {
-			 cost, err := strconv.ParseInt(cpuCost, 10, 64)
-			 if err == nil {
-				 // Add CPU cost to the resource map
-				 nodeResourceCostMap[nodeInfo.Node().Name] += cost
-			 }
-		 }
-	 
-		 if memoryFound {
-			 cost, err := strconv.ParseInt(memoryCost, 10, 64)
-			 if err == nil {
-				 // Add memory cost to the resource map
-				 nodeResourceCostMap[nodeInfo.Node().Name] += cost
-			 }
-		 }
-		 //------------------------------
 	}
 
 	// Update PreFilter State
@@ -327,7 +325,7 @@ func (no *NetworkOverhead) PreFilter(ctx context.Context, state *framework.Cycle
 		satisfiedMap:    satisfiedMap,
 		violatedMap:     violatedMap,
 		finalCostMap:    finalCostMap,
-		nodeResourceCostMap: nodeResourceCostMap, //Amira
+		nodeInfoMap: nodeInfoMap, //Amira
 	}
 
 	state.Write(preFilterStateKey, preFilterState)
@@ -360,73 +358,200 @@ func (no *NetworkOverhead) RemovePod(ctx context.Context,
 }
 
 // Filter : evaluate if node can respect maxNetworkCost requirements
+// func (no *NetworkOverhead) Filter(ctx context.Context,
+// 	cycleState *framework.CycleState,
+// 	pod *corev1.Pod,
+// 	nodeInfo *framework.NodeInfo) *framework.Status {
+// 	if nodeInfo.Node() == nil {
+// 		return framework.NewStatus(framework.Error, "node not found")
+// 	}
+// 	logger := klog.FromContext(ctx)
+
+// 	// Get PreFilterState
+// 	preFilterState, err := getPreFilterState(cycleState)
+// 	if err != nil {
+// 		logger.Error(err, "Failed to read preFilterState from cycleState", "preFilterStateKey", preFilterStateKey)
+// 		return framework.NewStatus(framework.Error, "not eligible due to failed to read from cycleState")
+// 	}
+
+// 	// If scoreEqually, return nil
+// 	if preFilterState.scoreEqually {
+// 		logger.V(6).Info("Score all nodes equally, return")
+// 		return nil
+// 	}
+
+// 	// Get satisfied and violated number of dependencies
+// 	satisfied := preFilterState.satisfiedMap[nodeInfo.Node().Name]
+// 	violated := preFilterState.violatedMap[nodeInfo.Node().Name]
+// 	logger.V(6).Info("Number of dependencies:", "satisfied", satisfied, "violated", violated)
+
+// 	// The pod is filtered out if the number of violated dependencies is higher than the satisfied ones
+// 	if violated > satisfied {
+// 		return framework.NewStatus(framework.Unschedulable,
+// 			fmt.Sprintf("Node %v does not meet several network requirements from Workload dependencies: Satisfied: %v Violated: %v", nodeInfo.Node().Name, satisfied, violated))
+// 	}
+// 	return nil
+// }
+
+//Customized filter: Amira
 func (no *NetworkOverhead) Filter(ctx context.Context,
-	cycleState *framework.CycleState,
-	pod *corev1.Pod,
-	nodeInfo *framework.NodeInfo) *framework.Status {
-	if nodeInfo.Node() == nil {
-		return framework.NewStatus(framework.Error, "node not found")
-	}
-	logger := klog.FromContext(ctx)
+    cycleState *framework.CycleState,
+    pod *corev1.Pod,
+    nodeInfo *framework.NodeInfo) *framework.Status {
+    if nodeInfo.Node() == nil {
+        return framework.NewStatus(framework.Error, "node not found")
+    }
 
-	// Get PreFilterState
-	preFilterState, err := getPreFilterState(cycleState)
-	if err != nil {
-		logger.Error(err, "Failed to read preFilterState from cycleState", "preFilterStateKey", preFilterStateKey)
-		return framework.NewStatus(framework.Error, "not eligible due to failed to read from cycleState")
-	}
+    // Step 1: Resource Capacity Check
+    node := nodeInfo.Node()
+    podResources := pod.Spec.Containers
+    var podCPU, podMemory int64
 
-	// If scoreEqually, return nil
-	if preFilterState.scoreEqually {
-		logger.V(6).Info("Score all nodes equally, return")
-		return nil
-	}
 
-	// Get satisfied and violated number of dependencies
-	satisfied := preFilterState.satisfiedMap[nodeInfo.Node().Name]
-	violated := preFilterState.violatedMap[nodeInfo.Node().Name]
-	logger.V(6).Info("Number of dependencies:", "satisfied", satisfied, "violated", violated)
+	// Calculate total requested resources for the pod
+	for _, container := range podResources {
+		// Check for CPU requests
+		if cpuQuantity := container.Resources.Requests.Cpu(); cpuQuantity != nil {
+			podCPU += cpuQuantity.MilliValue() // Dereference pointer to call MilliValue
+		}
 
-	// The pod is filtered out if the number of violated dependencies is higher than the satisfied ones
-	if violated > satisfied {
-		return framework.NewStatus(framework.Unschedulable,
-			fmt.Sprintf("Node %v does not meet several network requirements from Workload dependencies: Satisfied: %v Violated: %v", nodeInfo.Node().Name, satisfied, violated))
+		// Check for Memory requests
+		if memQuantity := container.Resources.Requests.Memory(); memQuantity != nil {
+			podMemory += memQuantity.Value() // Dereference pointer to call Value
+		}
 	}
-	return nil
+    // Check node's allocatable resources
+    nodeCPUQuantity := node.Status.Allocatable[corev1.ResourceCPU]
+	nodeMemoryQuantity := node.Status.Allocatable[corev1.ResourceMemory]
+
+	nodeCPU := nodeCPUQuantity.MilliValue()  // No need to dereference, as `nodeCPUQuantity` is already a pointer
+	nodeMemory := nodeMemoryQuantity.Value()  // Same here, `nodeMemoryQuantity` is a pointer
+
+
+    if podCPU > nodeCPU || podMemory > nodeMemory {
+        return framework.NewStatus(framework.Unschedulable,
+            fmt.Sprintf("Node %v does not have enough resources: Required CPU: %vm, Available CPU: %vm, Required Memory: %v, Available Memory: %v",
+                node.Name, podCPU, nodeCPU, podMemory, nodeMemory))
+    }
+
+    // Step 2: Network Cost Check
+    // Get PreFilterState
+    preFilterState, err := getPreFilterState(cycleState)
+    if err != nil {
+        klog.ErrorS(err, "Failed to read preFilterState from cycleState", "preFilterStateKey", preFilterStateKey)
+        return framework.NewStatus(framework.Error, "not eligible due to failed to read from cycleState")
+    }
+
+    // If scoreEqually, return nil
+    if preFilterState.scoreEqually {
+        klog.V(6).InfoS("Score all nodes equally, return")
+        return nil
+    }
+
+    // Get satisfied and violated number of dependencies
+    satisfied := preFilterState.satisfiedMap[nodeInfo.Node().Name]
+    violated := preFilterState.violatedMap[nodeInfo.Node().Name]
+    klog.V(6).InfoS("Number of dependencies:", "satisfied", satisfied, "violated", violated)
+
+    // The pod is filtered out if the number of violated dependencies is higher than the satisfied ones
+    if violated > satisfied {
+        return framework.NewStatus(framework.Unschedulable,
+            fmt.Sprintf("Node %v does not meet several network requirements from Workload dependencies: Satisfied: %v Violated: %v", nodeInfo.Node().Name, satisfied, violated))
+    }
+
+    // Node satisfies both resource and network requirements
+    return nil
 }
+
+//Amira
+func (no *NetworkOverhead) Score(ctx context.Context,
+    cycleState *framework.CycleState,
+    pod *corev1.Pod,
+    nodeName string) (int64, *framework.Status) {
+    score := framework.MinNodeScore
+
+    // Get PreFilterState
+    preFilterState, err := getPreFilterState(cycleState)
+    if err != nil {
+        klog.ErrorS(err, "Failed to read preFilterState from cycleState", "preFilterStateKey", preFilterStateKey)
+        return score, framework.NewStatus(framework.Error, "not eligible due to failed to read from cycleState, return min score")
+    }
+
+    // If scoreEqually, return minScore
+    if preFilterState.scoreEqually {
+        return score, framework.NewStatus(framework.Success, "scoreEqually enabled: minimum score")
+    }
+
+    // Get node's resource utilization
+    nodeInfo := preFilterState.nodeInfoMap[nodeName]
+    if nodeInfo == nil || nodeInfo.Node() == nil {
+        return score, framework.NewStatus(framework.Error, "nodeInfo not found, returning min score")
+    }
+
+    // Calculate resource utilization (CPU and Memory)
+    node := nodeInfo.Node()
+
+	nodeCPUQuantity := node.Status.Allocatable[corev1.ResourceCPU]
+	nodeMemoryQuantity := node.Status.Allocatable[corev1.ResourceMemory]
+
+	nodeCPU := nodeCPUQuantity.MilliValue()  // No need to dereference, as `nodeCPUQuantity` is already a pointer
+	nodeMemory := nodeMemoryQuantity.Value()  // Same here, `nodeMemoryQuantity` is a pointer
+
+    usedCPU := nodeInfo.Requested.MilliCPU
+    usedMemory := nodeInfo.Requested.Memory
+
+    cpuUtilization := float64(usedCPU) / float64(nodeCPU)
+    memoryUtilization := float64(usedMemory) / float64(nodeMemory)
+
+    // Define a weight factor for resources vs. network cost
+    resourceWeight := 0.5
+    networkWeight := 0.5
+
+    // Adjust the score based on resource utilization and network cost
+    networkCost := preFilterState.finalCostMap[nodeName]
+   // Assuming framework.MaxNodeScore is of type int64
+	floatMaxNodeScore := float64(framework.MaxNodeScore)
+
+	// Now, perform the calculation with float64 values
+	resourceScore := int64(floatMaxNodeScore * (1.0 - (cpuUtilization + memoryUtilization) / 2.0))
+
+
+    // Weighted score
+    weightedScore := resourceWeight*float64(resourceScore) + networkWeight*float64(framework.MaxNodeScore-networkCost)
+
+    score = int64(weightedScore)
+    klog.V(4).InfoS("Score:", "pod", pod.GetName(), "node", nodeName, "finalScore", score)
+    return score, framework.NewStatus(framework.Success, "Weighted score calculated")
+}
+
+
+
 
 // Score : evaluate score for a node
-func (no *NetworkOverhead) Score(ctx context.Context,
-	cycleState *framework.CycleState,
-	pod *corev1.Pod,
-	nodeName string) (int64, *framework.Status) {
-	score := framework.MinNodeScore
+// func (no *NetworkOverhead) Score(ctx context.Context,
+// 	cycleState *framework.CycleState,
+// 	pod *corev1.Pod,
+// 	nodeName string) (int64, *framework.Status) {
+// 	score := framework.MinNodeScore
 
-	logger := klog.FromContext(ctx)
-	// Get PreFilterState
-	preFilterState, err := getPreFilterState(cycleState)
-	if err != nil {
-		logger.Error(err, "Failed to read preFilterState from cycleState", "preFilterStateKey", preFilterStateKey)
-		return score, framework.NewStatus(framework.Error, "not eligible due to failed to read from cycleState, return min score")
-	}
+// 	logger := klog.FromContext(ctx)
+// 	// Get PreFilterState
+// 	preFilterState, err := getPreFilterState(cycleState)
+// 	if err != nil {
+// 		logger.Error(err, "Failed to read preFilterState from cycleState", "preFilterStateKey", preFilterStateKey)
+// 		return score, framework.NewStatus(framework.Error, "not eligible due to failed to read from cycleState, return min score")
+// 	}
 
-	// If scoreEqually, return minScore
-	if preFilterState.scoreEqually {
-		return score, framework.NewStatus(framework.Success, "scoreEqually enabled: minimum score")
-	}
+// 	// If scoreEqually, return minScore
+// 	if preFilterState.scoreEqually {
+// 		return score, framework.NewStatus(framework.Success, "scoreEqually enabled: minimum score")
+// 	}
 
-	// Return Accumulated Cost as score
-	score = preFilterState.finalCostMap[nodeName]
-	logger.V(4).Info("Score:", "pod", pod.GetName(), "node", nodeName, "finalScore", score)
-
-	//Amira
-	// Add resource usage costs to the score (higher costs are worse)
-    resourceCost := preFilterState.nodeResourceCostMap[nodeName]
-    score += resourceCost
-	logger.V(4).Info("Score with resource costs:", "pod", pod.GetName(), "node", nodeName, "finalScore", score)
-
-	return score, framework.NewStatus(framework.Success, "Accumulated cost added as score, normalization ensures lower costs are favored")
-}
+// 	// Return Accumulated Cost as score
+// 	score = preFilterState.finalCostMap[nodeName]
+// 	logger.V(4).Info("Score:", "pod", pod.GetName(), "node", nodeName, "finalScore", score)
+// 	return score, framework.NewStatus(framework.Success, "Accumulated cost added as score, normalization ensures lower costs are favored")
+// }
 
 // NormalizeScore : normalize scores since lower scores correspond to lower latency
 func (no *NetworkOverhead) NormalizeScore(ctx context.Context,

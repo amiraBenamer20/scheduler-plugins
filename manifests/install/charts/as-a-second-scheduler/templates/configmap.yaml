@@ -21,22 +21,22 @@ data:
               - name: "*"
           preFilter:
             enabled:
-              - name: NetworkCostAware
+              - name: NetworkOverhead
           filter:
             enabled:
-              - name: NetworkCostAware
+              - name: NetworkOverhead
           score:
             disabled:
               - name: NodeResourcesFit
             enabled:
-              - name: NetworkCostAware
+              - name: NetworkOverhead
                 weight: 5
         pluginConfig:
           - name: TopologicalcnSort
             args:
               namespaces:
                 - "default"
-          - name: NetworkCostAware
+          - name: NetworkOverhead
             args:
               namespaces:
                 - "default"
